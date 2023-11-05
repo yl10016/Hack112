@@ -32,7 +32,11 @@ def onAppStart(app):
 
     # goals 
     app.goals = ['Sleep!', 'Eat!']
-    app.checkMarksXY = []
+    app.rectHeight = 40 
+    app.rectWidth = app.width-app.leftMargin-app.rightMargin-50
+    app.checkMarkRadius = 20 
+    updateCheckAndRectLists(app)
+
 
 def redrawAll(app):
     #background
@@ -69,28 +73,57 @@ def redrawAll(app):
     drawLabel(f'{numGoalsLeft} goals left for today!', app.leftMargin, app.topHeight+90, font=app.font, align='left')
     for i in range(len(app.goals)): 
         # rectangle
-        rectHeight = 40
-        topLeftX = app.leftMargin + 40
-        topLeftY = app.topHeight+110+(rectHeight+20)*i
-        drawRect(topLeftX, topLeftY, app.width-app.leftMargin-app.rightMargin-50, rectHeight, align='left-top', fill=app.greenPastel)
+        topLeftX, topLeftY = app.rectsTopLeft[i]
+        drawRect(topLeftX, topLeftY, app.rectWidth, app.rectHeight, align='left-top', fill=app.greenPastel)
         
         # check button
-        checkButton = Image.open('goal-check.png')
-        checkButton = CMUImage(checkButton)
-        pilImage = checkButton.image
-        buttonWidth = pilImage.width//20
-        drawImage(checkButton, app.leftMargin, topLeftY+rectHeight//2, align='left', width=pilImage.width//20, height=pilImage.width//20)
-        buttoncx = app.leftMargin + buttonWidth//2
-        buttoncy = topLeftY + rectHeight//2 + buttonWidth//2
+        checkCX, checkCY = app.checkMarksXY[i]
+        drawCircle(checkCX, checkCY, app.checkMarkRadius, fill='orange')
+        # checkButton = Image.open('goal-check.png')
+        # checkButton = CMUImage(checkButton)
+        # pilImage = checkButton.image
+        # buttonWidth = pilImage.width//20
+        # drawImage(checkButton, app.leftMargin, topLeftY+rectHeight//2, align='left', width=pilImage.width//20, height=pilImage.width//20)
+        
         # if (buttoncx, buttoncy) not in app.checkMarksXY: 
         #     app.checkMarksXY.append()
 
         # goal string
         goal = app.goals[i]
-        drawLabel(goal, topLeftX+15, topLeftY+rectHeight//2, align='left')
+        drawLabel(goal, topLeftX+15, topLeftY+app.rectHeight//2, align='left')
+
+# checkmark buttons
+def updateCheckAndRectLists(app):
+    app.rectsTopLeft = []
+    app.checkMarksXY = []
+    
+    for i in range(len(app.goals)):
+        # rectangles 
+        topLeftX = app.leftMargin + 60
+        topLeftY = app.topHeight+110+(app.rectHeight+20)*i
+        app.rectsTopLeft.append((topLeftX, topLeftY))
+        
+        # checkmarks 
+        checkMarkCX = app.leftMargin + app.checkMarkRadius 
+        checkMarkCY = topLeftY + app.checkMarkRadius 
+        app.checkMarksXY.append((checkMarkCX, checkMarkCY))
 
 def distance(x1, y1, x2, y2):
     return ((x1-x2)**2 + (y1-y2)**2)**0.5
+
+def getGoalIndex(app, mouseX, mouseY, checkMarksXYList):
+    for i in range(len(checkMarksXYList)):
+        checkMarkCX, checkMarkCY = checkMarksXYList[i]
+        if distance(mouseX, mouseY, checkMarkCX, checkMarkCY) <= app.checkMarkRadius: 
+            return i 
+    return None 
+
+def onMousePress(app, mouseX, mouseY):
+    i = getGoalIndex(app, mouseX, mouseY, app.checkMarksXY)
+    if i != None: 
+        app.goals.pop(i)
+        updateCheckAndRectLists(app)
+
 
 def onKeyPress(app, key):
     app.seenKeys.add(key)
