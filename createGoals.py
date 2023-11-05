@@ -128,6 +128,7 @@ def onKeyPress(app, key):
             app.fieldCal_texts[app.active_fieldCal] += key
 
 def main():
-    print(runApp())
-
-main()
+    runApp(500, 750)
+    
+if __name__ == '__main__':
+    main()

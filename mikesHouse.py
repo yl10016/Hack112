@@ -1,5 +1,6 @@
 from cmu_graphics import *
 from PIL import Image
+import createGoals
 
 def onAppStart(app):
     loadImages(app)
@@ -8,13 +9,12 @@ def onAppStart(app):
     app.stepsPerSecond = 0.1
     app.name = ''
     app.seenKeys = set()
-
     app.food = None
     app.objectsList = None
 
     app.leftMargin = 50
     app.rightMargin = 50
-    app.topHeight = 360
+    app.topHeight = 370
     app.font = 'orbitron'
     app.greenPastel = rgb(193, 225, 193)
 
@@ -26,13 +26,29 @@ def onAppStart(app):
     app.homeLogo = CMUImage(app.homeLogo)
     app.shopLogo = Image.open('houseImages/menu-shopLogo.png')
     app.shopLogo = CMUImage(app.shopLogo)
-    app.scheduleLogo = Image.open('houseImages/menu-scheduleLogo.png')
+    app.scheduleLogo = Image.open('houseImages/menu-notePadLogo.png')
     app.scheduleLogo = CMUImage(app.scheduleLogo)
     app.menuLogos = [app.homeLogo, app.shopLogo, app.scheduleLogo]
+    app.menuCY = app.topHeight+40
+    app.homeCX = 150 
+    app.shopCX = 250 
+    app.scheduleCX = 350 
+    pilImage= app.homeLogo.image
+    app.menuLogoRadius = (pilImage.width//13) // 2
 
     # goals 
     app.goals = ['Sleep!', 'Eat!']
-    app.checkMarksXY = []
+    app.rectHeight = 40 
+    app.rectWidth = app.width-app.leftMargin-app.rightMargin-50
+    app.checkMarkRadius = 20 
+    updateCheckAndRectLists(app)
+
+    # add new goal 
+    app.plusButton = Image.open('houseImages/goal-AddNew.png')
+    app.plusButton = CMUImage(app.plusButton)
+    app.plusPilImage = app.plusButton.image
+    app.plusWidth = app.plusPilImage.width // 15
+    app.close = False 
 
 def redrawAll(app):
     #background
@@ -69,28 +85,79 @@ def redrawAll(app):
     drawLabel(f'{numGoalsLeft} goals left for today!', app.leftMargin, app.topHeight+90, font=app.font, align='left')
     for i in range(len(app.goals)): 
         # rectangle
-        rectHeight = 40
-        topLeftX = app.leftMargin + 40
-        topLeftY = app.topHeight+110+(rectHeight+20)*i
-        drawRect(topLeftX, topLeftY, app.width-app.leftMargin-app.rightMargin-50, rectHeight, align='left-top', fill=app.greenPastel)
-
+        topLeftX, topLeftY = app.rectsTopLeft[i]
+        drawRect(topLeftX, topLeftY, app.rectWidth, app.rectHeight, align='left-top', fill=app.greenPastel)
+        
         # check button
-        checkButton = Image.open('houseImages/goal-check.png')
-        checkButton = CMUImage(checkButton)
-        pilImage = checkButton.image
-        buttonWidth = pilImage.width//20
-        drawImage(checkButton, app.leftMargin, topLeftY+rectHeight//2, align='left', width=pilImage.width//20, height=pilImage.width//20)
-        buttoncx = app.leftMargin + buttonWidth//2
-        buttoncy = topLeftY + rectHeight//2 + buttonWidth//2
-        # if (buttoncx, buttoncy) not in app.checkMarksXY: 
-        #     app.checkMarksXY.append()
+        checkCX, checkCY = app.checkMarksXY[i]
+        drawCircle(checkCX, checkCY, app.checkMarkRadius, fill=app.checkMarksColors[i], border='orange', borderWidth=4)
 
         # goal string
         goal = app.goals[i]
-        drawLabel(goal, topLeftX+15, topLeftY+rectHeight//2, align='left')
+        drawLabel(goal, topLeftX+15, topLeftY+app.rectHeight//2, align='left')
+    
+    # add new goal 
+    drawImage(app.plusButton, app.width//2, app.height-40, align='center', 
+              width=app.plusWidth, height=app.plusWidth)
+
+# ---------------------- CHECKMARK BUTTONS
+def updateCheckAndRectLists(app):
+    app.rectsTopLeft = []
+    app.checkMarksXY = []
+    app.checkMarksColors = []
+    
+    for i in range(len(app.goals)):
+        # rectangles 
+        topLeftX = app.leftMargin + 60
+        topLeftY = app.topHeight+110+(app.rectHeight+20)*i
+        app.rectsTopLeft.append((topLeftX, topLeftY))
+        
+        # checkmarks 
+        checkMarkCX = app.leftMargin + app.checkMarkRadius 
+        checkMarkCY = topLeftY + app.checkMarkRadius 
+        app.checkMarksXY.append((checkMarkCX, checkMarkCY))
+        app.checkMarksColors.append(None)
 
 def distance(x1, y1, x2, y2):
     return ((x1-x2)**2 + (y1-y2)**2)**0.5
+
+def getGoalIndex(app, mouseX, mouseY, checkMarksXYList):
+    for i in range(len(checkMarksXYList)):
+        checkMarkCX, checkMarkCY = checkMarksXYList[i]
+        if distance(mouseX, mouseY, checkMarkCX, checkMarkCY) <= app.checkMarkRadius: 
+            return i 
+    return None 
+
+def onMousePress(app, mouseX, mouseY):
+    # goals checkmarks 
+    i = getGoalIndex(app, mouseX, mouseY, app.checkMarksXY)
+    if i != None: 
+        app.goals.pop(i)
+        updateCheckAndRectLists(app)
+    
+    # add new goal 
+    plusRadius = app.plusWidth // 2
+    plusCX = app.width // 2
+    plusCY = app.height - 40 
+    if distance(mouseX, mouseY, plusCX, plusCY) <= plusRadius: 
+        print('createGoals')
+
+    # go to other pages 
+    if distance(mouseX, mouseY, app.shopCX, app.menuCY) <= app.menuLogoRadius:
+        print('gameShop')
+    if distance(mouseX, mouseY, app.scheduleCX, app.menuCY) <= app.menuLogoRadius:
+        print('schedule')
+    
+
+def onMouseMove(app, mouseX, mouseY):
+    i = getGoalIndex(app, mouseX, mouseY, app.checkMarksXY)
+    if i != None:
+        app.checkMarksColors[i] = 'orange'
+    else:
+        for j in range(len(app.checkMarksColors)):
+            app.checkMarksColors[j] = None
+
+# ---------------------- MIKE'S HOUSE
 
 def onKeyPress(app, key):
     app.seenKeys.add(key)
@@ -160,5 +227,9 @@ def onStep(app):
 
 def main():
     runApp(500, 750)
+    if app.close: 
+        return True 
 
-main ()
+if __name__ == '__main__':
+    main()
+    
