@@ -24,6 +24,9 @@ def onAppStart(app):
     app.url = 'houseImages/IMG_0025 5.png'
 
 def redrawAll(app):
+    drawRect(50, 30, 50, 20, fill='darkRed')
+    drawLabel('Close', 75, 40, fill ='white')
+    
     backCol = rgb(214, 246, 190)
     frontCol = rgb(229, 255, 204)
     frontPageCx = app.width/2-15
@@ -120,6 +123,9 @@ def onMousePress(app, mouseX, mouseY):
             (mouseY > 75) and (mouseY < 675)):
             if not app.isFull:
                 app.isWriting = True
+    
+    if 50 <= mouseX <= 100 and 30 <= mouseY <= 50:
+        print("True")
 
 def onKeyPress(app, key):
     if app.isWriting:

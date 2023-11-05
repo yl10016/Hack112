@@ -96,7 +96,6 @@ def onMousePress(app, mouseX, mouseY):
     
     if 400 <= mouseX <= 450 and 30 <= mouseY <= 50:
         print("True")
-        time.sleep(1)
         print(app.inventory)
 
 def main():

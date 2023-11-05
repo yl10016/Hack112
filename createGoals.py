@@ -102,7 +102,6 @@ def onMousePress(app, mouseX, mouseY):
         app.close = True
         app.field_texts[3] = app.day
         print("True")
-        time.sleep(1)
         print(app.field_texts)
 
 def onKeyPress(app, key):
