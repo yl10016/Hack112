@@ -128,6 +128,7 @@ def onMousePress(app, mouseX, mouseY):
     if i != None: 
         app.goals.pop(i)
         app.mikecoins += 5
+        if app.mood < 200: app.mood += 10
         updateCheckAndRectLists(app)
     if (mouseX >= 450 and mouseY < app.height/2 
         and app.hunger < 200 and app.food != None):
