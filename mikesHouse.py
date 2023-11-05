@@ -134,8 +134,7 @@ def onMousePress(app, mouseX, mouseY):
     plusCX = app.width // 2
     plusCY = app.height - 40 
     if distance(mouseX, mouseY, plusCX, plusCY) <= plusRadius: 
-        print('plus clicked')
-        app.close = True 
+        print('createGoals')
 
 def onMouseMove(app, mouseX, mouseY):
     i = getGoalIndex(app, mouseX, mouseY, app.checkMarksXY)
