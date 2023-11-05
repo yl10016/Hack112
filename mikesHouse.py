@@ -8,7 +8,6 @@ def onAppStart(app):
     app.stepsPerSecond = 0.1
     app.name = ''
     app.seenKeys = set()
-
     app.food = None
     app.objectsList = None
 
@@ -36,7 +35,6 @@ def onAppStart(app):
     app.rectWidth = app.width-app.leftMargin-app.rightMargin-50
     app.checkMarkRadius = 20 
     updateCheckAndRectLists(app)
-
 
 def redrawAll(app):
     #background
@@ -135,6 +133,7 @@ def onMouseMove(app, mouseX, mouseY):
             app.checkMarksColors[j] = None
 
 # ---------------------- MIKE'S HOUSE
+
 def onKeyPress(app, key):
     app.seenKeys.add(key)
     if 'enter' in app.seenKeys:
@@ -195,6 +194,14 @@ def drawInventory(app):
         drawImage(app.food[i], app.width-20, app.height/4 + 20*i, align='center')
 
 
+=======
+def drawObjects(app, objects):
+    # list of stuff person bought
+    for i in range(len(objects)):
+        if i % 2 == 0:
+            drawImage(objects[i], 20, app.height/4 + 20*i, align='center')
+        else:
+            drawImage(objects[i], app.width-20, app.height/4 + 20*i, align='center')
 def onStep(app):
     if app.hunger > 10:
         app.hunger -= 10
