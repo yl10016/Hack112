@@ -14,7 +14,7 @@ def onAppStart(app):
 
     app.leftMargin = 50
     app.rightMargin = 50
-    app.topHeight = 360
+    app.topHeight = 370
     app.font = 'orbitron'
     app.greenPastel = rgb(193, 225, 193)
 
@@ -78,7 +78,7 @@ def redrawAll(app):
         
         # check button
         checkCX, checkCY = app.checkMarksXY[i]
-        drawCircle(checkCX, checkCY, app.checkMarkRadius, fill='orange')
+        drawCircle(checkCX, checkCY, app.checkMarkRadius, fill=app.checkMarksColors[i], border='orange', borderWidth=4)
         # checkButton = Image.open('goal-check.png')
         # checkButton = CMUImage(checkButton)
         # pilImage = checkButton.image
@@ -92,10 +92,11 @@ def redrawAll(app):
         goal = app.goals[i]
         drawLabel(goal, topLeftX+15, topLeftY+app.rectHeight//2, align='left')
 
-# checkmark buttons
+# ---------------------- CHECKMARK BUTTONS
 def updateCheckAndRectLists(app):
     app.rectsTopLeft = []
     app.checkMarksXY = []
+    app.checkMarksColors = []
     
     for i in range(len(app.goals)):
         # rectangles 
@@ -107,6 +108,7 @@ def updateCheckAndRectLists(app):
         checkMarkCX = app.leftMargin + app.checkMarkRadius 
         checkMarkCY = topLeftY + app.checkMarkRadius 
         app.checkMarksXY.append((checkMarkCX, checkMarkCY))
+        app.checkMarksColors.append(None)
 
 def distance(x1, y1, x2, y2):
     return ((x1-x2)**2 + (y1-y2)**2)**0.5
@@ -124,7 +126,15 @@ def onMousePress(app, mouseX, mouseY):
         app.goals.pop(i)
         updateCheckAndRectLists(app)
 
+def onMouseMove(app, mouseX, mouseY):
+    i = getGoalIndex(app, mouseX, mouseY, app.checkMarksXY)
+    if i != None:
+        app.checkMarksColors[i] = 'orange'
+    else:
+        for j in range(len(app.checkMarksColors)):
+            app.checkMarksColors[j] = None
 
+# ---------------------- MIKE'S HOUSE
 def onKeyPress(app, key):
     app.seenKeys.add(key)
     if 'enter' in app.seenKeys:
@@ -167,6 +177,7 @@ def drawMike(app, x, y):
     drawRect(app.width - 20, app.height/2 -20, 200, 10, 
             align='right', fill=None, border='black')
 
+# ---------------------- STORE AND INVENTORY
 def drawObjects(app):
     # list of stuff person bought
     if app.objectsList == None: return
