@@ -1,5 +1,6 @@
 from cmu_graphics import *
 from PIL import Image
+import time
 
 def onAppStart(app):
     app.width = 500
@@ -29,6 +30,8 @@ def onAppStart(app):
 
 def redrawAll(app):
     drawLabel(f"Game Shop!", app.width/2, 50, size=20, align='center')
+    drawRect(400, 30, 50, 20, fill='darkRed')
+    drawLabel('Close', 425, 40, fill ='white')
     # Display user's money in the top right corner
     drawLabel(f"Available Funds: ${app.money}", app.width - 50, 75, size=12, align='right')
 
@@ -90,6 +93,11 @@ def onMousePress(app, mouseX, mouseY):
                 app.active_item = i    
                 app.displayed = set(app.inventory)    
         y += 100
+    
+    if 400 <= mouseX <= 450 and 30 <= mouseY <= 50:
+        print("True")
+        time.sleep(1)
+        print(app.inventory)
 
 def main():
     runApp()
