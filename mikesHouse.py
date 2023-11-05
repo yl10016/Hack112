@@ -1,5 +1,6 @@
 from cmu_graphics import *
 from PIL import Image
+import createGoals
 
 def onAppStart(app):
     loadImages(app)
@@ -25,7 +26,7 @@ def onAppStart(app):
     app.homeLogo = CMUImage(app.homeLogo)
     app.shopLogo = Image.open('houseImages/menu-shopLogo.png')
     app.shopLogo = CMUImage(app.shopLogo)
-    app.scheduleLogo = Image.open('houseImages/menu-scheduleLogo.png')
+    app.scheduleLogo = Image.open('houseImages/menu-notePadLogo.png')
     app.scheduleLogo = CMUImage(app.scheduleLogo)
     app.menuLogos = [app.homeLogo, app.shopLogo, app.scheduleLogo]
 
@@ -41,6 +42,7 @@ def onAppStart(app):
     app.plusButton = CMUImage(app.plusButton)
     app.plusPilImage = app.plusButton.image
     app.plusWidth = app.plusPilImage.width // 15
+    app.close = False 
 
 def redrawAll(app):
     #background
@@ -133,6 +135,7 @@ def onMousePress(app, mouseX, mouseY):
     plusCY = app.height - 40 
     if distance(mouseX, mouseY, plusCX, plusCY) <= plusRadius: 
         print('plus clicked')
+        app.close = True 
 
 def onMouseMove(app, mouseX, mouseY):
     i = getGoalIndex(app, mouseX, mouseY, app.checkMarksXY)
@@ -212,5 +215,9 @@ def onStep(app):
 
 def main():
     runApp(500, 750)
+    if app.close: 
+        return True 
 
-main ()
+if __name__ == '__main__':
+    main()
+    
