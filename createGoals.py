@@ -1,4 +1,5 @@
 from cmu_graphics import *
+import time
 
 def onAppStart(app):
     app.year = "2023"
@@ -100,7 +101,9 @@ def onMousePress(app, mouseX, mouseY):
     if 400 <= mouseX <= 450 and 30 <= mouseY <= 50:
         app.close = True
         app.field_texts[3] = app.day
-        print('True', app.field_texts)
+        print("True")
+        time.sleep(1)
+        print(app.field_texts)
 
 def onKeyPress(app, key):
     if app.active_field is not None:
