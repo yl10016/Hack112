@@ -14,14 +14,18 @@ def onAppStart(app):
     app.width = 500  # Set the width to 500 pixels
     app.height = 750  # Set the height to 750 pixels
     app.fields = ["Task:", "Add Tag:", "Description:", 'Schedule Date:']
-    app.field_texts = ["", "1", "", ""]
+    app.field_texts = ["", "", "", ""]
     app.active_field = None
     app.field_colors = ["gray", "gray", "gray", "gray"]
     app.tagBold = [False,False,False]
 
+    app.close = False
+
 def redrawAll(app):
     y = 100
     drawLabel('Schedule a Task!', 250, y-50, size=20, align='center')
+    drawRect(400, 30, 50, 20, fill='darkRed')
+    drawLabel('Close', 425, 40, fill ='white')
     for i in range(len(app.fields)-1):
         label = app.fields[i]
         field_text = app.field_texts[i]
@@ -92,6 +96,11 @@ def onMousePress(app, mouseX, mouseY):
         app.active_fieldCal = "Month"
         app.fieldCal_colors["Month"] = "green"
         app.fieldCal_colors["Day"] = ["white"] * 31  # Reset all days to white
+    
+    if 400 <= mouseX <= 450 and 30 <= mouseY <= 50:
+        app.close = True
+        app.field_texts[3] = app.day
+        print('True', app.field_texts)
 
 def onKeyPress(app, key):
     if app.active_field is not None:
@@ -119,6 +128,6 @@ def onKeyPress(app, key):
             app.fieldCal_texts[app.active_fieldCal] += key
 
 def main():
-    runApp()
+    print(runApp())
 
 main()
