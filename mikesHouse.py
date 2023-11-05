@@ -36,6 +36,12 @@ def onAppStart(app):
     app.checkMarkRadius = 20 
     updateCheckAndRectLists(app)
 
+    # add new goal 
+    app.plusButton = Image.open('houseImages/goal-AddNew.png')
+    app.plusButton = CMUImage(app.plusButton)
+    app.plusPilImage = app.plusButton.image
+    app.plusWidth = app.plusPilImage.width // 15
+
 def redrawAll(app):
     #background
     drawRect(0, 0, app.width, app.height/2, fill='orange')
@@ -81,6 +87,10 @@ def redrawAll(app):
         # goal string
         goal = app.goals[i]
         drawLabel(goal, topLeftX+15, topLeftY+app.rectHeight//2, align='left')
+    
+    # add new goal 
+    drawImage(app.plusButton, app.width//2, app.height-40, align='center', 
+              width=app.plusWidth, height=app.plusWidth)
 
 # ---------------------- CHECKMARK BUTTONS
 def updateCheckAndRectLists(app):
@@ -111,10 +121,18 @@ def getGoalIndex(app, mouseX, mouseY, checkMarksXYList):
     return None 
 
 def onMousePress(app, mouseX, mouseY):
+    # goals checkmarks 
     i = getGoalIndex(app, mouseX, mouseY, app.checkMarksXY)
     if i != None: 
         app.goals.pop(i)
         updateCheckAndRectLists(app)
+    
+    # add new goal 
+    plusRadius = app.plusWidth // 2
+    plusCX = app.width // 2
+    plusCY = app.height - 40 
+    if distance(mouseX, mouseY, plusCX, plusCY) <= plusRadius: 
+        print('plus clicked')
 
 def onMouseMove(app, mouseX, mouseY):
     i = getGoalIndex(app, mouseX, mouseY, app.checkMarksXY)
