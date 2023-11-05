@@ -8,33 +8,31 @@ def onAppStart(app):
     app.stepsPerSecond = 0.1
     app.name = ''
     app.seenKeys = set()
+
     app.food = None
     app.objectsList = None
 
     app.leftMargin = 50
     app.rightMargin = 50
-    app.topHeight = 370
+    app.topHeight = 360
     app.font = 'orbitron'
     app.greenPastel = rgb(193, 225, 193)
 
     # mikecoins 
     app.mikecoins = 0
-    
+
     # menu logos 
-    app.homeLogo = Image.open('menu-homeLogo.png')
+    app.homeLogo = Image.open('houseImages/menu-homeLogo.png')
     app.homeLogo = CMUImage(app.homeLogo)
-    app.shopLogo = Image.open('menu-shopLogo.png')
+    app.shopLogo = Image.open('houseImages/menu-shopLogo.png')
     app.shopLogo = CMUImage(app.shopLogo)
-    app.scheduleLogo = Image.open('menu-scheduleLogo.png')
+    app.scheduleLogo = Image.open('houseImages/menu-scheduleLogo.png')
     app.scheduleLogo = CMUImage(app.scheduleLogo)
     app.menuLogos = [app.homeLogo, app.shopLogo, app.scheduleLogo]
 
     # goals 
     app.goals = ['Sleep!', 'Eat!']
-    app.rectHeight = 40 
-    app.rectWidth = app.width-app.leftMargin-app.rightMargin-50
-    app.checkMarkRadius = 20 
-    updateCheckAndRectLists(app)
+    app.checkMarksXY = []
 
 def redrawAll(app):
     #background
@@ -56,7 +54,7 @@ def redrawAll(app):
 
     #inventory
     drawInventory(app)
-    
+
     # menu 
     for i in range(len(app.menuLogos)): 
         logo = app.menuLogos[i]
@@ -64,75 +62,35 @@ def redrawAll(app):
         drawImage(logo, 150+i*100, app.topHeight+40, align='center',
                 width=pilImage.width//13,
                 height=pilImage.height//13)
-    
+
 
     # goals left for today 
     numGoalsLeft = len(app.goals)
     drawLabel(f'{numGoalsLeft} goals left for today!', app.leftMargin, app.topHeight+90, font=app.font, align='left')
     for i in range(len(app.goals)): 
         # rectangle
-        topLeftX, topLeftY = app.rectsTopLeft[i]
-        drawRect(topLeftX, topLeftY, app.rectWidth, app.rectHeight, align='left-top', fill=app.greenPastel)
-        
+        rectHeight = 40
+        topLeftX = app.leftMargin + 40
+        topLeftY = app.topHeight+110+(rectHeight+20)*i
+        drawRect(topLeftX, topLeftY, app.width-app.leftMargin-app.rightMargin-50, rectHeight, align='left-top', fill=app.greenPastel)
+
         # check button
-        checkCX, checkCY = app.checkMarksXY[i]
-        drawCircle(checkCX, checkCY, app.checkMarkRadius, fill=app.checkMarksColors[i], border='orange', borderWidth=4)
-        # checkButton = Image.open('goal-check.png')
-        # checkButton = CMUImage(checkButton)
-        # pilImage = checkButton.image
-        # buttonWidth = pilImage.width//20
-        # drawImage(checkButton, app.leftMargin, topLeftY+rectHeight//2, align='left', width=pilImage.width//20, height=pilImage.width//20)
-        
+        checkButton = Image.open('houseImages/goal-check.png')
+        checkButton = CMUImage(checkButton)
+        pilImage = checkButton.image
+        buttonWidth = pilImage.width//20
+        drawImage(checkButton, app.leftMargin, topLeftY+rectHeight//2, align='left', width=pilImage.width//20, height=pilImage.width//20)
+        buttoncx = app.leftMargin + buttonWidth//2
+        buttoncy = topLeftY + rectHeight//2 + buttonWidth//2
         # if (buttoncx, buttoncy) not in app.checkMarksXY: 
         #     app.checkMarksXY.append()
 
         # goal string
         goal = app.goals[i]
-        drawLabel(goal, topLeftX+15, topLeftY+app.rectHeight//2, align='left')
-
-# ---------------------- CHECKMARK BUTTONS
-def updateCheckAndRectLists(app):
-    app.rectsTopLeft = []
-    app.checkMarksXY = []
-    app.checkMarksColors = []
-    
-    for i in range(len(app.goals)):
-        # rectangles 
-        topLeftX = app.leftMargin + 60
-        topLeftY = app.topHeight+110+(app.rectHeight+20)*i
-        app.rectsTopLeft.append((topLeftX, topLeftY))
-        
-        # checkmarks 
-        checkMarkCX = app.leftMargin + app.checkMarkRadius 
-        checkMarkCY = topLeftY + app.checkMarkRadius 
-        app.checkMarksXY.append((checkMarkCX, checkMarkCY))
-        app.checkMarksColors.append(None)
+        drawLabel(goal, topLeftX+15, topLeftY+rectHeight//2, align='left')
 
 def distance(x1, y1, x2, y2):
     return ((x1-x2)**2 + (y1-y2)**2)**0.5
-
-def getGoalIndex(app, mouseX, mouseY, checkMarksXYList):
-    for i in range(len(checkMarksXYList)):
-        checkMarkCX, checkMarkCY = checkMarksXYList[i]
-        if distance(mouseX, mouseY, checkMarkCX, checkMarkCY) <= app.checkMarkRadius: 
-            return i 
-    return None 
-
-def onMousePress(app, mouseX, mouseY):
-    i = getGoalIndex(app, mouseX, mouseY, app.checkMarksXY)
-    if i != None: 
-        app.goals.pop(i)
-        updateCheckAndRectLists(app)
-
-def onMouseMove(app, mouseX, mouseY):
-    i = getGoalIndex(app, mouseX, mouseY, app.checkMarksXY)
-    if i != None:
-        app.checkMarksColors[i] = 'orange'
-    else:
-        for j in range(len(app.checkMarksColors)):
-            app.checkMarksColors[j] = None
-
-# ---------------------- MIKE'S HOUSE
 
 def onKeyPress(app, key):
     app.seenKeys.add(key)
@@ -147,8 +105,8 @@ def onKeyPress(app, key):
 
 def loadImages(app):
     app.images = dict()
-    app.images['mike'] = Image.open('IMG_0025 4.png')
-    app.images['smileMike'] = Image.open('IMG_0025 5.png')
+    app.images['mike'] = Image.open('houseImages/IMG_0025 4.png')
+    app.images['smileMike'] = Image.open('houseImages/IMG_0025 5.png')
 
 def drawMike(app, x, y):
     #mike
@@ -157,7 +115,7 @@ def drawMike(app, x, y):
     else:
         mike = CMUImage(app.images['smileMike'])
     drawImage(mike, x, y, align='center')
-    
+
     if app.mood <= 10:
         drawLabel("I'm bored!", app.width/2, 20)
     elif app.hunger <= 10:
@@ -176,7 +134,6 @@ def drawMike(app, x, y):
     drawRect(app.width - 20, app.height/2 -20, 200, 10, 
             align='right', fill=None, border='black')
 
-# ---------------------- STORE AND INVENTORY
 def drawObjects(app):
     # list of stuff person bought
     if app.objectsList == None: return
@@ -194,14 +151,6 @@ def drawInventory(app):
         drawImage(app.food[i], app.width-20, app.height/4 + 20*i, align='center')
 
 
-=======
-def drawObjects(app, objects):
-    # list of stuff person bought
-    for i in range(len(objects)):
-        if i % 2 == 0:
-            drawImage(objects[i], 20, app.height/4 + 20*i, align='center')
-        else:
-            drawImage(objects[i], app.width-20, app.height/4 + 20*i, align='center')
 def onStep(app):
     if app.hunger > 10:
         app.hunger -= 10
