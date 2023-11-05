@@ -8,8 +8,13 @@ def onAppStart(app):
     app.stepsPerSecond = 0.1
     app.name = ''
     app.seenKeys = set()
-    app.food = None
+    # app.food = None
     app.objectsList = None
+    app.food = [CMUImage(Image.open('donut.png')), 
+                CMUImage(Image.open('cake.png'))]
+    # app.objectsList = [CMUImage(Image.open('chair copy.tiff')), 
+    #                    CMUImage(Image.open('axolotl copy.tiff')),
+    #                    CMUImage(Image.open('plant copy.tiff'))]
 
     app.leftMargin = 50
     app.rightMargin = 50
@@ -123,6 +128,11 @@ def onMousePress(app, mouseX, mouseY):
     if i != None: 
         app.goals.pop(i)
         updateCheckAndRectLists(app)
+    if (mouseX >= 450 and mouseY < app.height/2 
+        and app.hunger < 200 and app.food != None):
+        #feed mike 
+        app.hunger += 10
+        app.food.pop()
 
 def onMouseMove(app, mouseX, mouseY):
     i = getGoalIndex(app, mouseX, mouseY, app.checkMarksXY)
@@ -181,27 +191,24 @@ def drawObjects(app):
     # list of stuff person bought
     if app.objectsList == None: return
     for i in range(len(app.objectsList)):
-        if i % 2 == 0:
-            drawImage(app.objectsList[i], 20, app.height/4 + 20*i, align='center')
-        else:
-            drawImage(app.objectsList[i], app.width-20, 
-                      app.height/4 + 20*i, align='center')
+        drawImage(app.objectsList[i], 20, app.height/4 + 50*i, align='center')
 
 def drawInventory(app):
     drawLabel('Your stuff:', app.width-20, 50, align='right')
     if app.food == None: return
     for i in range(len(app.food)):
-        drawImage(app.food[i], app.width-20, app.height/4 + 20*i, align='center')
+        drawImage(app.food[i], app.width-50, 100 + 50*i, align='center')
 
 
-=======
-def drawObjects(app, objects):
+
+def drawObjects(app):
     # list of stuff person bought
-    for i in range(len(objects)):
+    if app.objectsList == None: return
+    for i in range(len(app.objectsList)):
         if i % 2 == 0:
-            drawImage(objects[i], 20, app.height/4 + 20*i, align='center')
+            drawImage(app.objectsList[i], 20, app.height/4 + 20*i, align='center')
         else:
-            drawImage(objects[i], app.width-20, app.height/4 + 20*i, align='center')
+            drawImage(app.objectsList[i], app.width-20, app.height/4 + 20*i, align='center')
 def onStep(app):
     if app.hunger > 10:
         app.hunger -= 10
