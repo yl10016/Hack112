@@ -29,6 +29,12 @@ def onAppStart(app):
     app.scheduleLogo = Image.open('houseImages/menu-notePadLogo.png')
     app.scheduleLogo = CMUImage(app.scheduleLogo)
     app.menuLogos = [app.homeLogo, app.shopLogo, app.scheduleLogo]
+    app.menuCY = app.topHeight+40
+    app.homeCX = 150 
+    app.shopCX = 250 
+    app.scheduleCX = 350 
+    pilImage= app.homeLogo.image
+    app.menuLogoRadius = (pilImage.width//13) // 2
 
     # goals 
     app.goals = ['Sleep!', 'Eat!']
@@ -135,6 +141,13 @@ def onMousePress(app, mouseX, mouseY):
     plusCY = app.height - 40 
     if distance(mouseX, mouseY, plusCX, plusCY) <= plusRadius: 
         print('createGoals')
+
+    # go to other pages 
+    if distance(mouseX, mouseY, app.shopCX, app.menuCY) <= app.menuLogoRadius:
+        print('gameShop')
+    if distance(mouseX, mouseY, app.scheduleCX, app.menuCY) <= app.menuLogoRadius:
+        print('schedule')
+    
 
 def onMouseMove(app, mouseX, mouseY):
     i = getGoalIndex(app, mouseX, mouseY, app.checkMarksXY)
