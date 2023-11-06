@@ -4,11 +4,12 @@
 A tamagotchi-style (pixelated) version of the Finch Self-Care App. Set and complete tasks to earn points to keep our beloved Professor Mike Taylor happy!
 
 ## Details
-1. Users can set goals within the app
-2. Users receive points for completing goals
-3. Points can be used to purchase items to decorate the home
-4. Prof. MTaylor becomes unhappy when his food bar gets low, so click on a food item to feed him before then!
-5. Need to take notes? Click on the notes icon which provides you with a notebook with 3 turnable pages
+1. To use the app, install CMU Graphics and run controller.py
+2. Users can set goals within the app
+3. Users receive points for completing goals
+4. Points can be used to purchase items to decorate the home
+5. Prof. MTaylor becomes unhappy when his food bar gets low, so click on a food item to feed him before then!
+6. Need to take notes? Click on the notes icon which provides you with a notebook with 3 turnable pages
 
 ## Citations
 1. Shop logo: <a href="https://www.flaticon.com/free-icons/supermarket" title="supermarket icons">Supermarket icons created by Freepik - Flaticon</a> 
