@@ -18,10 +18,10 @@ def run_createGoals(process_mikesHouse):
 
     captured_line = None
     for line in process.stdout:
-        print(line, end="")  # Print the output of home.py
+        print(line, end="")
         if "True" in line:
             captured_line = line
-            process.terminate()  # Terminate home.py when "True" is printed
+            process.terminate()
             break
     #data_from_createGoals = process_mikesHouse.stdout.readline().strip()
     
@@ -31,10 +31,10 @@ def run_gameShop(process_mikesHouse):
 
     captured_line = None
     for line in process.stdout:
-        print(line, end="")  # Print the output of home.py
+        print(line, end="") 
         if "True" in line:
             captured_line = line
-            process.terminate()  # Terminate home.py when "True" is printed
+            process.terminate()
             break
 
 def run_NOTES(process_mikesHouse):
@@ -42,10 +42,10 @@ def run_NOTES(process_mikesHouse):
 
     captured_line = None
     for line in process.stdout:
-        print(line, end="")  # Print the output of home.py
+        print(line, end="") 
         if "True" in line:
             captured_line = line
-            process.terminate()  # Terminate home.py when "True" is printed
+            process.terminate()
             break
 
 if __name__ == "__main__":
